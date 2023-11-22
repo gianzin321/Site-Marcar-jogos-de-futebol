@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Agendamento de Jogos de Futebol</title>
+    <link rel="stylesheet" href="estilo.css">
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            /* Adicione uma cor de fundo se desejar */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Agendamento de Jogos de Futebol</h1>
+
+    <form id="game-form">
+        <label for="campo">Nome do Campo:</label>
+        <input type="text" id="campo" required><br>
+
+        <label for="dia">Dia:</label>
+        <input type="date" id="dia" required><br>
+
+        <label for="horario">Horário:</label>
+        <input type="time" id="horario" required><br>
+
+        <label for="jogadores">Jogadores:</label>
+        <textarea id="jogadores" rows="4" required></textarea><br>
+
+        <label for="whatsapp">WhatsApp dos Jogadores:</label>
+        <input type="text" id="whatsapp" placeholder="Número de WhatsApp" required><br>
+
+        <button type="submit" onclick="agendarJogo()">Agendar Jogo</button>
+    </form>
+
+    <h2>Jogos Agendados</h2>
+    <ul id="game-list">
+        <!-- A lista de jogos agendados será exibida aqui -->
+    </ul>
+
+    <script>
+        function agendarJogo() {
+            var campo = document.getElementById('campo').value;
+            var dia = document.getElementById('dia').value;
+            var horario = document.getElementById('horario').value;
+            var jogadores = document.getElementById('jogadores').value;
+            var whatsapp = document.getElementById('whatsapp').value;
+
+            var newItem = document.createElement('li');
+            newItem.innerHTML = `<strong>${campo}</strong><br>Dia: ${dia}<br>Horário: ${horario}<br>Jogadores: ${jogadores}<br>WhatsApp: ${whatsapp}`;
+
+            document.getElementById('game-list').appendChild(newItem);
+
+            // Cria o link do WhatsApp
+            var mensagemWhatsapp = encodeURIComponent(`Seu jogo em ${campo} começa em 1 hora!`);
+            var linkWhatsapp = `https://wa.me/${whatsapp}?text=${mensagemWhatsapp}`;
+
+            // Abre o link do WhatsApp
+            window.open(linkWhatsapp, '_blank');
+
+            // Adiciona notificação
+            if (Notification.permission === "granted") {
+                var notification = new Notification("Jogo Agendado", {
+                    body: `Campo: ${campo}\nDia: ${dia}\nHorário: ${horario}\nJogadores: ${jogadores}\nWhatsApp: ${whatsapp}`
+                });
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(function (permission) {
+                    if (permission === "granted") {
+                        var notification = new Notification("Jogo Agendado", {
+                            body: `Campo: ${campo}\nDia: ${dia}\nHorário: ${horario}\nJogadores: ${jogadores}\nWhatsApp: ${whatsapp}`
+                        });
+                    }
+                });
+            }
+        }
+    </script>
+
+    <!-- Rodapé -->
+    <footer>SMT.LTDA</footer>
+</body>
+
+</html>
